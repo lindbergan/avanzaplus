@@ -41,8 +41,8 @@ function updateList() {
       var col1 = rows.children[j].children[2].textContent;
       var col2 = rows.children[j].children[3].textContent;
   
-      var amnt = parseFloat(col1.replace(/[/s]/, ""));
-      var price = parseFloat(col2.replace(/[,]/, "."));
+      var amnt = parseFloat(col1.replace(" ", ""));
+      var price = parseFloat(col2.replace(" ", "").replace(/[,]/, "."));
       var result = parseInt(amnt * price, 10);
       if (rows.children[j].children.length == 5) {
         var node1 = document.createElement('td');
@@ -67,8 +67,8 @@ function createTotal() {
   
       var col2 = rows.children[j].children[3].textContent;
   
-      var amnt = parseFloat(col1.replace(/[/s]/, ""));
-      var price = parseFloat(col2.replace(/[,]/, "."));
+      var amnt = parseFloat(col1.replace(" ", ""));
+      var price = parseFloat(col2.replace(" ", "").replace(/[,]/, "."));
       var result = parseInt(amnt * price, 10);
   
       var node1 = document.createElement('td');
