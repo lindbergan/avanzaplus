@@ -8,4 +8,5 @@ Ni kan exempelvis:
 - Sortera på avkastning %.
 - Se en extra kolumn i "Senaste avslut" som visar totalsumman av varje avslut.
 
-![screenshot](sortedbychangepercent.png)
+![screenshot](screenshots/sortedbychangepercent.png)
+![screenshotlatest](screenshots/latest-trades.png)
