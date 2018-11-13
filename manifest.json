@@ -1,12 +1,21 @@
 {
     "name": "Avanza+",
-    "description" : "Base Level Extension",
-    "version": "0.1",
-    "manifest_version": 2,
+    "description" : "Ett tillägg till Avanza.se som ger dig extra funktionalitet.",
     "browser_action": {
-      "default_popup": "hello.html",
-      "default_icon": "hello_extensions.png"
+      "default_icon": {
+        "16": "16_logo.png",
+        "32": "32_logo.png"
+      }
     },
+    "icons": {
+      "16": "16_logo.png",
+      "32": "32_logo.png",
+      "48": "48_logo.png",
+      "128": "128_logo.png"
+    },
+    "author": "adrlin@student.chalmers.se",
+    "version": "1.0",
+    "manifest_version": 2,
     "content_scripts": [
       {
         "matches": ["*://*.avanza.se/*"],
