@@ -10,6 +10,7 @@ Ni kan exempelvis:
 
 Todo:
 - Nettoköpare/nettosäljare senaste 5min/10min/15min osv. T.ex certifikat, köper man mer nu än de senaste minutrarna? osv. 
+- Öka senaste avslut listans längd. Senaste 20 avsluten t.ex.
 
 ![screenshot](screenshots/sortedbychangepercent.png)
 ![screenshotlatest](screenshots/latest-trades.png)
