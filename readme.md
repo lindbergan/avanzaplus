@@ -8,5 +8,8 @@ Ni kan exempelvis:
 - Sortera på avkastning %.
 - Se en extra kolumn i "Senaste avslut" som visar totalsumman av varje avslut.
 
+Todo:
+- Nettoköpare/nettosäljare senaste 5min/10min/15min osv. T.ex certifikat, köper man mer nu än de senaste minutrarna? osv. 
+
 ![screenshot](screenshots/sortedbychangepercent.png)
 ![screenshotlatest](screenshots/latest-trades.png)
