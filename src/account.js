@@ -1,6 +1,13 @@
 var sortIncreasingChange = true;
-var sortIncreasingProfit = true;  
+var sortIncreasingProfit = true;
 
+const changePercentIndex = 4;
+const profitPercentIndex = 9;
+
+/*
+* Adds two event listeners to the column headers: [+/- %] and [Avkastn. %] 
+  that sort them by increasing/decreasing order.
+*/
 function enableSortingInAccount() {
   const positionsElement = document.getElementsByClassName('positions')[0];
   const changePercentElement = document.getElementsByClassName('changePercent')[0];
@@ -9,11 +16,11 @@ function enableSortingInAccount() {
   if (!positionsElement || !changePercentElement || !profitPercentElement) return;
 
   changePercentElement.addEventListener('click', () => { 
-    sortPositions(positionsElement, 4, sortIncreasingChange);
+    sortPositions(positionsElement, changePercentIndex, sortIncreasingChange);
     sortIncreasingChange = !sortIncreasingChange;
   });
   profitPercentElement.addEventListener('click', () => {
-    sortPositions(positionsElement, 9, sortIncreasingProfit);
+    sortPositions(positionsElement, profitPercentIndex, sortIncreasingProfit);
     sortIncreasingProfit = !sortIncreasingProfit;
   });
 }
@@ -32,9 +39,11 @@ function sortPositions(positionsElement, indexOfColumn, sortIncreasingOrder) {
   const positions = positionsElement.children[0].children[0].children[3];
   const list = Array.from(positions.children);
   const sorted = list.sort((a, b) => {
-    var i1 = parseFloat(a.children[indexOfColumn].innerText.replace(/,/, '.'));
-    var i2 = parseFloat(b.children[indexOfColumn].innerText.replace(/,/, '.'));
-    return sortIncreasingOrder ? i2 - i1 : i1 - i2;
+    var firstStockValue = parseFloat(a.children[indexOfColumn].innerText.replace(/,/, '.'));
+    var secondStockValue = parseFloat(b.children[indexOfColumn].innerText.replace(/,/, '.'));
+    return sortIncreasingOrder 
+      ? secondStockValue - firstStockValue 
+      : firstStockValue - secondStockValue;
   });
   list.forEach(s => positions.removeChild(s));
   sorted.forEach(s => positions.appendChild(s));
