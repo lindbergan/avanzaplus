@@ -34,7 +34,10 @@ module.exports = {
         ],
         "callback-return": "error",
         "camelcase": "error",
-        "capitalized-comments": "error",
+        "capitalized-comments": [
+            "error",
+            "always"
+        ],
         "class-methods-use-this": "error",
         "comma-dangle": "error",
         "comma-spacing": [
@@ -109,7 +112,7 @@ module.exports = {
         "max-params": "error",
         "max-statements": "off",
         "max-statements-per-line": "off",
-        "multiline-comment-style": "error",
+        "multiline-comment-style": "off",
         "new-cap": "error",
         "new-parens": "error",
         "newline-after-var": "off",
@@ -167,7 +170,7 @@ module.exports = {
         "no-new-require": "error",
         "no-new-wrappers": "error",
         "no-octal-escape": "error",
-        "no-param-reassign": "off",
+        "no-param-reassign": "error",
         "no-path-concat": "error",
         "no-plusplus": [
             "error",
@@ -189,7 +192,7 @@ module.exports = {
         "no-script-url": "error",
         "no-self-compare": "error",
         "no-sequences": "error",
-        "no-shadow": "off",
+        "no-shadow": "error",
         "no-shadow-restricted-names": "error",
         "no-spaced-func": "error",
         "no-sync": "error",
@@ -197,6 +200,7 @@ module.exports = {
         "no-template-curly-in-string": "error",
         "no-ternary": "off",
         "no-throw-literal": "error",
+        "no-trailing-spaces": "off",
         "no-undef-init": "error",
         "no-undefined": "off",
         "no-underscore-dangle": "error",
@@ -217,7 +221,10 @@ module.exports = {
         "no-with": "error",
         "nonblock-statement-body-position": "error",
         "object-curly-newline": "error",
-        "object-curly-spacing": "error",
+        "object-curly-spacing": [
+            "error",
+            "never"
+        ],
         "object-property-newline": "error",
         "object-shorthand": "error",
         "one-var": "off",
