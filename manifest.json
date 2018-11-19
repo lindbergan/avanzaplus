@@ -3,15 +3,15 @@
     "description" : "Ett tillägg till Avanza.se som ger dig extra funktionalitet.",
     "browser_action": {
       "default_icon": {
-        "16": "16_logo.png",
-        "32": "32_logo.png"
+        "16": "icons/16_logo.png",
+        "32": "icons/32_logo.png"
       }
     },
     "icons": {
-      "16": "16_logo.png",
-      "32": "32_logo.png",
-      "48": "48_logo.png",
-      "128": "128_logo.png"
+      "16": "icons/16_logo.png",
+      "32": "icons/32_logo.png",
+      "48": "icons/48_logo.png",
+      "128": "icons/128_logo.png"
     },
     "author": "adrlin@student.chalmers.se",
     "version": "1.0",
