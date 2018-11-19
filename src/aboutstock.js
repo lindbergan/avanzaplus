@@ -1,3 +1,6 @@
+/*
+* Adds a column called Total in Latest Trades table and adds an event-listener that listens to new transactions.
+*/
 function addTotalColumn() {
   const rows = document.getElementsByClassName('latest_trades')[0].children[1].children[0].children[1];
   if (rows) createTotalColumn(); rows.addEventListener("transitionend", () => updateListOfLastTrades());
