@@ -19,8 +19,8 @@
     "content_scripts": [
       {
         "matches": ["*://*.avanza.se/*"],
-        "css": ["styles.css"],
-        "js": ["background.js"]
+        "css": ["css/styles.css"],
+        "js": ["src/background.js"]
       }
     ]
   }

@@ -2,10 +2,5 @@
   "name": "avanzaplus",
   "version": "1.0",
   "description": "Ett tillägg till Avanza.se som ger dig extra funktionalitet.",
-  "main": "background.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Adrian Lindberg",
-  "license": "ISC"
+  "author": "Adrian Lindberg"
 }
