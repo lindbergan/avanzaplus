@@ -14,7 +14,7 @@
     "128": "icons/128_logo.png"
   },
   "author": "adrlin@student.chalmers.se",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 2,
   "content_scripts": [
     {
