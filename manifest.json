@@ -1,26 +1,31 @@
 {
-    "name": "Avanza+",
-    "description" : "Ett tillägg till Avanza.se som ger dig extra funktionalitet.",
-    "browser_action": {
-      "default_icon": {
-        "16": "icons/16_logo.png",
-        "32": "icons/32_logo.png"
-      }
-    },
-    "icons": {
+  "name": "Avanza+",
+  "description": "Ett tillägg till Avanza.se som ger dig extra funktionalitet.",
+  "browser_action": {
+    "default_icon": {
       "16": "icons/16_logo.png",
-      "32": "icons/32_logo.png",
-      "48": "icons/48_logo.png",
-      "128": "icons/128_logo.png"
-    },
-    "author": "adrlin@student.chalmers.se",
-    "version": "1.0",
-    "manifest_version": 2,
-    "content_scripts": [
-      {
-        "matches": ["*://*.avanza.se/*"],
-        "css": ["css/styles.css"],
-        "js": ["src/background.js"]
-      }
-    ]
-  }
+      "32": "icons/32_logo.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16_logo.png",
+    "32": "icons/32_logo.png",
+    "48": "icons/48_logo.png",
+    "128": "icons/128_logo.png"
+  },
+  "author": "adrlin@student.chalmers.se",
+  "version": "1.0",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["*://*.avanza.se/*"],
+      "css": ["css/styles.css"],
+      "js": [
+        "src/devtools.js",
+        "src/aboutstock.js",
+        "src/account.js",
+        "src/background.js"
+      ]
+    }
+  ]
+}
