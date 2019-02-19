@@ -13,5 +13,5 @@ Se backloggen för todo's och lägg till fler om ni har synpunkter.
 
 [Backlog](https://github.com/lindbergan/avanzaplus/projects/1)
 
-![screenshot](screenshots/sortedbychangepercent.png)
-![screenshotlatest](screenshots/latest-trades.png)
+<img src="screenshots/sortedbychangepercent.png" width="800" alt="Screenshot">
+<img src="screenshots/latest-trades.png" width="500" alt="ScreenshotLatest">
