@@ -16,6 +16,7 @@
   "author": "adrlin@student.chalmers.se",
   "version": "1.1",
   "manifest_version": 2,
+  "background": { "scripts": ["hot-reload.js"] },
   "content_scripts": [
     {
       "matches": ["*://*.avanza.se/*"],
