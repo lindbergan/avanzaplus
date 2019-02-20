@@ -1,6 +1,7 @@
 if (isAvanzaActive()) {
   if (isOnAboutStockView()) {
     initListOfLastTrades()
+    initNormalScalingOnGraph()
   } else if (isOnAccountView()) {
     enableSortingInAccount()
     addTodaysReturn()

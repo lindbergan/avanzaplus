@@ -23,6 +23,21 @@ function initObserver() {
   })
 }
 
+function initNormalScalingOnGraph() {
+  const observer = new MutationObserver(mt => {
+    const button = document.querySelector('.chartsTabs > span')
+    const chart = document.querySelector('#highcharts-0')
+    if (button && chart) {
+      button.click()
+      observer.disconnect()
+    }
+  })
+  observer.observe(document.querySelector('#surface'), {
+    childList: true,
+    subtree: true,
+  })
+}
+
 function correctLatestTradesSize() {
   const children = document.getElementsByClassName('latest_trades')[0]
     .children[1].children[0].children[1].children
