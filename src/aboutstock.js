@@ -38,6 +38,37 @@ function initNormalScalingOnGraph() {
   })
 }
 
+function initViewSpread() {
+  const list = document.querySelector('.content > ul')
+  var clone = list.children[9].cloneNode(true)
+  list.insertBefore(clone, list.children[10])
+  clone.children[0].textContent = 'Spread'
+  clone.children[1].className = 'bold SText'
+  var buyPrice = parseFloat(
+    list.children[3].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+  )
+  var sellPrice = parseFloat(
+    list.children[4].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+  )
+  clone.insertBefore(document.createElement('br'), clone.children[1])
+  clone.children[2].textContent =
+    parseFloat((1 - buyPrice / sellPrice) * 100).toFixed(2) + ' %'
+  const observer = new MutationObserver(mt => {
+    buyPrice = parseFloat(
+      list.children[3].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+    )
+    sellPrice = parseFloat(
+      list.children[4].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+    )
+    clone.children[2].textContent =
+      parseFloat((1 - buyPrice / sellPrice) * 100).toFixed(2) + ' %'
+  })
+  observer.observe(list, {
+    childList: true,
+    subtree: true,
+  })
+}
+
 function correctLatestTradesSize() {
   const children = document.getElementsByClassName('latest_trades')[0]
     .children[1].children[0].children[1].children
