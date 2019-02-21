@@ -36,24 +36,49 @@ function initNormalScalingOnGraph() {
     childList: true,
     subtree: true,
   })
+  /*var xhttp = new XMLHttpRequest()
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText)
+    }
+  }
+  xhttp.open('GET', 'https://jsonplaceholder.typicode.com/todos/1', true)
+  xhttp.send()*/
 }
 
 function initViewSpread() {
   const list = document.querySelector('.content > ul')
-  var clone = list.children[9].cloneNode(true)
-  list.insertBefore(clone, list.children[10])
-  clone.children[0].textContent = 'Spread'
-  clone.children[1].className = 'bold SText'
-  var buyPrice = parseFloat(
-    list.children[3].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
-  )
-  var sellPrice = parseFloat(
-    list.children[4].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
-  )
-  clone.insertBefore(document.createElement('br'), clone.children[1])
-  clone.children[2].textContent =
-    parseFloat((1 - buyPrice / sellPrice) * 100).toFixed(2) + ' %'
+  if (
+    /(\d)+,(\d)+/.test(list.children[3].textContent) &&
+    /(\d)+,(\d)+/.test(list.children[4].textContent) &&
+    !Array.from(list.children).find(e => e.textContent.includes('Spread'))
+  ) {
+    var clone = list.children[9].cloneNode(true)
+    list.insertBefore(clone, list.children[10])
+    clone.children[0].textContent = 'Spread'
+    clone.children[1].className = 'bold SText'
+  }
   const observer = new MutationObserver(mt => {
+    if (
+      /(\d)+,(\d)+/.test(list.children[3].textContent) &&
+      /(\d)+,(\d)+/.test(list.children[4].textContent) &&
+      !Array.from(list.children).find(e => e.textContent.includes('Spread'))
+    ) {
+      observer.disconnect()
+      return
+    }
+    var buyPrice = parseFloat(
+      list.children[3].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+    )
+    var sellPrice = parseFloat(
+      list.children[4].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
+    )
+    clone.insertBefore(document.createElement('br'), clone.children[1])
+    clone.children[2].textContent =
+      Math.abs(parseFloat((1 - buyPrice / sellPrice) * 100))
+        .toFixed(2)
+        .toString()
+        .replace('.', ',') + ' %'
     buyPrice = parseFloat(
       list.children[3].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
     )
@@ -61,7 +86,7 @@ function initViewSpread() {
       list.children[4].textContent.match(/(\d)+,(\d)+/)[0].replace(',', '.')
     )
     clone.children[2].textContent =
-      parseFloat((1 - buyPrice / sellPrice) * 100).toFixed(2) + ' %'
+      Math.abs(parseFloat((1 - buyPrice / sellPrice) * 100)).toFixed(2) + ' %'
   })
   observer.observe(list, {
     childList: true,
