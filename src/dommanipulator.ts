@@ -1,5 +1,6 @@
 import {
-  TradeHistory
+  TradeHistory,
+  ToggleOptionMenu
 } from "./types"
 
 import {
@@ -7,6 +8,7 @@ import {
   parseInteger,
   parseTime,
   parseNumber,
+  isSet,
 } from "./utils"
 
 import {
@@ -41,6 +43,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
   inited: boolean = false
   callback: ((newTrades: TradeHistory[]) => void) | undefined = undefined
   getHistory: () => TradeHistory[]
+  maxTradeHistoryLength: number = MAX_TRADE_HISTORY
 
   constructor(
     getHistory: () => TradeHistory[],
@@ -52,24 +55,44 @@ export class LatestTradesDomManipulator extends DomManipulator {
     this.getHistory = getHistory
     this.callback = callback
 
-    this.initPoller()
+    if (!this.inited) {
+      this.initPoller()
+    }
   }
 
   initPoller() {
     const pollingInterval = 1e2
     let interval = setInterval(() => {
-      if (this.getContainer() && this.getTable()) {
+      if (this.getContainer() && this.getTable() && (this.getTableBody()?.children || []).length > 0) {
         clearInterval(interval)
-        this.inited = true
+        if (!this.inited) {
+          this.inited = true
 
-        this.cloneTable()
-        this.initListener()
-        this.addTotalRowInHeader()
-      }
-      else {
-        console.log("Not found, rechecking soon...")
+          this.cloneTable()
+          this.addPreviousHistory()
+          this.initListener()
+          this.addTotalRowInHeader()
+          this.renderNewTableRows()
+
+          this.waitForTradeSwitchToRender(() => {
+            this.addMaxTradesSwitch()
+          })
+        }
       }
     }, pollingInterval)
+  }
+
+  addPreviousHistory() {
+    const fakeTbody = this.getFakeTableBody()
+
+    if (fakeTbody) {
+      const currentRows = Array.of(...fakeTbody.children)
+        .map(c => this.mapNodeToHistory((c as HTMLTableRowElement)))
+
+      if (this.callback) {
+        this.callback(currentRows)
+      }
+    }
   }
 
   cloneTable() {
@@ -90,6 +113,113 @@ export class LatestTradesDomManipulator extends DomManipulator {
       // Add fake table
       tableContainer.appendChild(clone)
     }
+  }
+
+  cloneToggleOption(): HTMLElement | undefined {
+    const toggleOption = document.querySelector("aza-toggle-option")
+
+    if (toggleOption) {
+      const clone: HTMLElement = (toggleOption.cloneNode(true) as HTMLElement)
+
+      return clone
+    }
+    return undefined
+  }
+
+  cloneSwitchElement(): HTMLElement | undefined {
+    const switchElement = document.querySelector("aza-toggle-switch")
+
+    if (switchElement) {
+      const clone: HTMLElement = (switchElement.cloneNode(true) as HTMLElement)
+
+      // Add margin
+      clone.style.marginTop = "10px"
+
+      return clone
+    }
+    return undefined
+  }
+
+  createToggleOption = (menu: ToggleOptionMenu): HTMLElement | undefined => {
+    const clone = this.cloneToggleOption()
+
+    if (clone) {
+      const button = clone.querySelector("button")
+
+      if (button) {
+        button.addEventListener("click", () => {
+          this.handleMaxLengthChange(menu.value)
+        })
+
+        const textSpan = button.querySelector("span")
+
+        if (textSpan) {
+          textSpan.textContent = menu.text
+        }
+
+        return clone
+      }
+    }
+    return undefined
+  }
+
+  waitForTradeSwitchToRender(whenReady: () => void) {
+    const intervalPollingMs = 1e2
+    let checkingInterval = setInterval(() => {
+      const switchEl = this.cloneSwitchElement()
+      if (isSet(switchEl)) {
+        const toggleEl = this.cloneToggleOption()
+        if (isSet(toggleEl)) {
+          clearInterval(checkingInterval)
+
+          whenReady()
+        }
+      }
+    }, intervalPollingMs)
+  }
+
+  addMaxTradesSwitch() {
+    const menus: ToggleOptionMenu[] = [
+      {
+        text: "Normal",
+        value: 10,
+      },
+      {
+        text: "100st",
+        value: 100,
+      },
+      {
+        text: "Oändligt",
+        value: 1e6,
+      },
+    ]
+
+    const switchElClone = this.cloneSwitchElement()
+
+    if (switchElClone) {
+      // @ts-ignore
+      switchElClone.replaceChildren([])
+
+      for (const menu of menus) {
+        const toggleOption = this.createToggleOption(menu)
+
+        if (toggleOption) {
+          switchElClone.appendChild(toggleOption)
+        }
+      }
+
+      const container = this.getContainer()
+
+      // Add to container
+      if (container) {
+        container.appendChild(switchElClone)
+      }
+    }
+  }
+
+  handleMaxLengthChange(value: number) {
+    this.maxTradeHistoryLength = value
+    this.renderNewTableRows()
   }
 
   mutationToCallback(mutationList: MutationRecord[]): void {
@@ -117,14 +247,10 @@ export class LatestTradesDomManipulator extends DomManipulator {
     this.emptyTbodyList()
 
     const history = this.getHistory()
-
-    const startIndex = history.length < MAX_TRADE_HISTORY ? 0 : history.length - MAX_TRADE_HISTORY
-    const endIndex = history.length
-
     const tbody = this.getFakeTableBody()
 
     if (tbody) {
-      for (const el of history.slice(startIndex, endIndex)) {
+      for (const el of history.slice(0, this.maxTradeHistoryLength)) {
         tbody.appendChild(this.createRow(el))
       }
     }
@@ -240,6 +366,8 @@ export class LatestTradesDomManipulator extends DomManipulator {
     // Total
     newRow.appendChild(this.createTotalCell(history))
 
+    newRow.setAttribute("data-fake-id", history.id)
+
     return newRow
   }
 
@@ -250,6 +378,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
     const buyer = node.cells[0].innerText
     const seller = node.cells[1].innerText
     const time = node.cells[6].innerText
+    const id = node.getAttribute("data-fake-id") || crypto.randomUUID()
 
     return {
       amount: amount,
@@ -258,6 +387,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
       buyer: buyer.trim(),
       seller: seller.trim(),
       time: parseTime(time.trim()),
+      id: id,
     }
   }
 }

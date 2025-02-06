@@ -7,6 +7,6 @@ const isOnAboutStockView = () => document.location.href.includes("/handla/order.
 
 if (isAvanzaActive()) {
   if (isOnAboutStockView()) {
-    initListOfLastTrades()
+    initListOfLastTrades(true)
   }
 }

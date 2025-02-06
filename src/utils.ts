@@ -1,3 +1,8 @@
+import {
+  Unset,
+  Defined
+} from "./types"
+
 export const parseTime = (time: string): Date => {
   const parts = time
     .trim()
@@ -47,3 +52,5 @@ export const parseInteger = (str: string): number => {
     .replaceAll(" ", "")
     .replaceAll("&nbsp;", "")))
 }
+
+export const isSet = (val: HTMLElement | Unset): val is Defined<HTMLElement | Unset> => val !== undefined && val !== null
