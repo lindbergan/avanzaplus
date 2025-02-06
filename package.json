@@ -7,7 +7,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "publish": "rm -f publish.zip && zip -r publish publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
