@@ -1,2 +1,2 @@
 // Max trade history
-export const MAX_TRADE_HISTORY = 10
+export const MAX_TRADE_HISTORY = 100

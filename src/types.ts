@@ -8,6 +8,12 @@ export interface TradeHistory {
   id: string,
 }
 
+export interface StockTickHistory {
+  buyPrice: number,
+  sellPrice: number,
+  time: Date,
+}
+
 export type Unset = undefined | null
 export type Defined<T> = T extends Unset ? never : T
 

@@ -5,10 +5,8 @@ Avanza+ fungerar i bakgrunden och har inget GUI så ni kan 'dölja' pluginet om 
 ![Screen 1](screenshots/longertrades.png)
 
 # Todo
-- Uppdatera innehavs värde i realtid med senaste kurs / (marketmaker.
+- Uppdatera innehavs värde i realtid med senaste kurs / (marketmaker).
 - När marketmaker finns, färgge köp och sälj i avsluten. Köp av marketmaker = blå, Sälj mot marketmaker = röd
 - Rita graf med tidsserie och Y = marketmaker kurs
-- Läs in tidigare avslut än 10 st via parsing av "se mer"
 
 # Kända buggar
-- Öppna ny flik initierar inte tabellen

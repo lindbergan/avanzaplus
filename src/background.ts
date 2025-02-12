@@ -1,12 +1,19 @@
 import {
-  initListOfLastTrades
-} from "./latesttrades"
+  init
+} from "./tradeview"
 
 const isAvanzaActive = () => document.location.origin.includes('www.avanza.se')
 const isOnAboutStockView = () => document.location.href.includes("/handla/order.html")
 
+let inited = false
+
 if (isAvanzaActive()) {
-  if (isOnAboutStockView()) {
-    initListOfLastTrades(true)
-  }
+  let interval = setInterval(() => {
+    if (isOnAboutStockView() && !inited) {
+      inited = true
+      clearInterval(interval)
+
+      init(true)
+    }
+  }, 1e2)
 }
