@@ -11,6 +11,10 @@ import {
   StockTickGraphDomManipulator
 } from "./stocktickgraph"
 
+import {
+  getTime,
+} from "./utils"
+
 class TradeManipulator {
   private history: TradeHistory[] = []
   private stockTickHistory: StockTickHistory[] = []
@@ -33,30 +37,38 @@ class TradeManipulator {
       const checks: boolean[] = [
         a.amount === b.amount,
         a.price === b.price,
-        a.time.getTime() === b.time.getTime(),
+        getTime(a.time) === getTime(b.time),
         a.buyer === b.buyer,
         a.seller === b.seller
       ]
 
-      return !checks.every(c => c)
+      return checks.every(c => c)
     }
 
     return newHistory
-      .filter(history => !this.getHistory().some(h => compare(history, h)))
+      .filter(history => {
+        const foundThis = this.getHistory().find(h => compare(history, h))
+
+        return !foundThis
+      })
   }
 
   pushHistory(newHistory: TradeHistory[]): void {
-    this.history.push(...this.filterReRenderedHistory(newHistory))
+    const nonPreviouslyAdded = this.filterReRenderedHistory(newHistory)
 
-    // Sort todo-make better
-    this.history.sort((a, b) => b.time.getTime() - a.time.getTime())
+    if (nonPreviouslyAdded.length > 0) {
+      this.history.push(...nonPreviouslyAdded)
+
+      // Sort todo-make better
+      this.history.sort((a, b) => getTime(b.time) - getTime(a.time))
+    }
   }
 
   pushStockTickHistory(newHistory: StockTickHistory[]): void {
     this.stockTickHistory.push(...newHistory)
 
     // Sort todo-make better
-    this.stockTickHistory.sort((a, b) => b.time.getTime() - a.time.getTime())
+    this.stockTickHistory.sort((a, b) => getTime(b.time) - getTime(a.time))
   }
 }
 

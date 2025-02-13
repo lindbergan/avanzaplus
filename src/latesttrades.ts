@@ -31,6 +31,12 @@ interface AvanzaTrade {
   cancelled: boolean,
 }
 
+interface ParseResult {
+  success: boolean,
+  error?: unknown,
+  tradeHistory?: TradeHistory,
+}
+
 interface AvanzaTradesResponse {
   trades: AvanzaTrade[],
 }
@@ -84,8 +90,13 @@ export class LatestTradesDomManipulator extends DomManipulator {
     const fakeTbody = this.getFakeTableBody()
 
     if (fakeTbody) {
-      const currentRows = Array.of(...fakeTbody.children)
-        .map(c => this.mapNodeToHistory((c as HTMLTableRowElement)))
+      const parseResults: ParseResult[] = Array.of(...fakeTbody.children)
+        .map((node: Node) => this.mapNodeToHistory((node as HTMLTableRowElement)))
+
+      const currentRows = parseResults
+        .filter(r => r.success)
+        .map(r => r.tradeHistory)
+        .filter(th => th !== undefined)
 
       if (this.callback) {
         this.callback(currentRows)
@@ -252,8 +263,13 @@ export class LatestTradesDomManipulator extends DomManipulator {
   }
 
   handleNewTrades(mutation: MutationRecord) {
-    const newHistory: TradeHistory[] = Array.of(...mutation.addedNodes)
+    const parseResults: ParseResult[] = Array.of(...mutation.addedNodes)
       .map((node: Node) => this.mapNodeToHistory((node as HTMLTableRowElement)))
+
+    const newHistory = parseResults
+      .filter(r => r.success)
+      .map(r => r.tradeHistory)
+      .filter(th => th !== undefined)
 
     if (newHistory.length > 0) {
       if (this.callback) {
@@ -390,23 +406,34 @@ export class LatestTradesDomManipulator extends DomManipulator {
     return newRow
   }
 
-  mapNodeToHistory(node: HTMLTableRowElement): TradeHistory {
-    const amount = parseInteger(node.cells[2].innerText)
-    const price = parseNumber(parseNumber(node.cells[3].innerText).toFixed(2))
-    const total = (amount * price).toFixed(2)
-    const buyer = node.cells[0].innerText
-    const seller = node.cells[1].innerText
-    const time = node.cells[6].innerText
-    const id = node.getAttribute("data-fake-id") || crypto.randomUUID()
+  mapNodeToHistory(node: HTMLTableRowElement): ParseResult {
+    try {
+      const amount = parseInteger(node.cells[2].innerText)
+      const price = parseNumber(parseNumber(node.cells[3].innerText).toFixed(2))
+      const total = (amount * price).toFixed(2)
+      const buyer = node.cells[0].innerText
+      const seller = node.cells[1].innerText
+      const time = node.cells[6].innerText
+      const id = node.getAttribute("data-fake-id") || crypto.randomUUID()
 
-    return {
-      amount: amount,
-      price: price,
-      total: parseNumber(total),
-      buyer: buyer.trim(),
-      seller: seller.trim(),
-      time: parseTime(time.trim()),
-      id: id,
+      return {
+        success: true,
+        tradeHistory: {
+          amount: amount,
+          price: price,
+          total: parseNumber(total),
+          buyer: buyer.trim(),
+          seller: seller.trim(),
+          time: parseTime(time.trim()),
+          id: id,
+        },
+      }
+    }
+    catch (e) {
+      return {
+        success: false,
+        error: e,
+      }
     }
   }
 }

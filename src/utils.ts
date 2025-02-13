@@ -19,6 +19,11 @@ export const parseTime = (time: string): Date => {
   return newDate
 }
 
+export const getTime = (date: Date): number => {
+  date.setMilliseconds(0)
+  return date.getTime()
+}
+
 export const formatTime = (date: Date): string => {
   const fmtNumber = (n: number): string => n < 10 ? `0${n}` : String(n)
 
