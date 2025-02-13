@@ -15,13 +15,72 @@ import {
   getTime,
 } from "./utils"
 
+interface AvanzaInstrumentInfoFeatureSupport {
+  fillAndOrKill: boolean,
+  marketTrades: boolean,
+  marketTradesSummary: boolean,
+  nordicAtMid: boolean,
+  openVolume: boolean,
+  routingStrategies: boolean,
+  stopLoss: boolean,
+  stopLossMarketMakerQuote: boolean,
+}
+
+interface AvanzaInstrumentInfoTicketSizeList {
+  tickSizeEntries: AvanzaInstrumentInfoTicketSizeListTicketSizeEntry[],
+}
+
+interface AvanzaInstrumentInfoTicketSizeListTicketSizeEntry {
+  max: number,
+  min: number,
+  tick: number,
+}
+
+interface AvanzaInstrumentInfo {
+  collateralValue: number,
+  countryCode: string,
+  currency: string,
+  featureSupport: AvanzaInstrumentInfoFeatureSupport,
+  id: string,
+  instrumentId: string,
+  instrumentType: string,
+  isin: string,
+  marketplace: string,
+  maxValidUntil: string,
+  minValidUntil: string,
+  name: string,
+  orderbookStatus: string,
+  priceType: string,
+  ticketSizeList: AvanzaInstrumentInfoTicketSizeList,
+  tickerSymbol: string,
+  tradingUnit: number,
+  underlyingCountryCode: string,
+  underlyingOrderbook: string,
+  volumeFactor: number,
+}
+
+export interface InstrumentInfo {
+  marketMaker: string | undefined,
+  instrumentId: string,
+}
+
 class TradeManipulator {
   private history: TradeHistory[] = []
   private stockTickHistory: StockTickHistory[] = []
+  private instrumentInfo: AvanzaInstrumentInfo | undefined = undefined
 
   constructor() {
     this.history = []
     this.stockTickHistory = []
+    this.instrumentInfo = undefined
+  }
+
+  setInstrumentInfo(instrumentInfo: AvanzaInstrumentInfo) {
+    this.instrumentInfo = instrumentInfo
+  }
+
+  getInstrumentInfo(): AvanzaInstrumentInfo | undefined {
+    return this.instrumentInfo
   }
 
   getHistory(): TradeHistory[] {
@@ -82,9 +141,26 @@ const initListOfLastTrades = (
     // Do stuff
   }
 
+  const getInstrumentInfo = (): InstrumentInfo | undefined => {
+    const info = tradeManipulator.getInstrumentInfo()
+
+    if (info) {
+      const isAvanzaProduct = info.tickerSymbol.includes(" AVA ")
+
+      return {
+        instrumentId: info.instrumentId,
+        marketMaker: isAvanzaProduct ? "MSN" : undefined
+      }
+    }
+    else {
+      return undefined
+    }
+  }
+
   const domManipulator = new LatestTradesDomManipulator(
     () => tradeManipulator.getHistory(),
-    handleTradeUpdate
+    handleTradeUpdate,
+    getInstrumentInfo,
   )
 
   if (debug) {
@@ -114,9 +190,24 @@ const initMarketMakerTickGraph = (
   }
 }
 
+const getInstrumentInfo = (
+  tradeManipulator: TradeManipulator,
+  debug: boolean = false) => {
+  const parts = window.location.href.split("/kop/")
+  const instrumentId = parts[parts.length - 1]
+
+  fetch(`https://www.avanza.se/_api/trading-critical/rest/orderbook/${instrumentId}`)
+    .then(res => res.json())
+    .then(res => {
+      tradeManipulator.setInstrumentInfo((res as AvanzaInstrumentInfo))
+    })
+    .catch(err => console.log(err))
+}
+
 export const init = (debug = false) => {
   const tradeManipulator = new TradeManipulator()
 
+  getInstrumentInfo(tradeManipulator, debug)
   initListOfLastTrades(tradeManipulator, debug)
   initMarketMakerTickGraph(tradeManipulator, debug)
 

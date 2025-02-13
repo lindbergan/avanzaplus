@@ -19,6 +19,10 @@ import {
   DomManipulator
 } from "./dommanipulator"
 
+import {
+  InstrumentInfo
+} from "./tradeview"
+
 interface AvanzaTrade {
   buyer: string,
   buyerName: string,
@@ -45,17 +49,26 @@ export class LatestTradesDomManipulator extends DomManipulator {
   inited: boolean = false
   callback: ((newTrades: TradeHistory[]) => void) | undefined = undefined
   getHistory: () => TradeHistory[]
+  getInstrumentInfo: () => InstrumentInfo | undefined
   maxTradeHistoryLength: number = MAX_TRADE_HISTORY
 
   constructor(
     getHistory: () => TradeHistory[],
-    callback: (newTrades: TradeHistory[]) => void
+    callback: (newTrades: TradeHistory[]) => void,
+    getInstrumentInfo: () => InstrumentInfo | undefined
   ) {
     const latestTradesTableSelector = "[data-e2e=orderTradesPanel]"
     super(latestTradesTableSelector)
 
     this.getHistory = getHistory
     this.callback = callback
+    this.getInstrumentInfo = getInstrumentInfo
+
+    const preferences = JSON.parse(sessionStorage.getItem("avanzapluspreferences") || "{}")
+
+    if (preferences["max-length"] !== undefined) {
+      this.maxTradeHistoryLength = parseInt(preferences["max-length"])
+    }
 
     if (!this.inited) {
       this.initPoller()
@@ -250,6 +263,15 @@ export class LatestTradesDomManipulator extends DomManipulator {
   handleMaxLengthChange(value: number) {
     this.maxTradeHistoryLength = value
     this.renderNewTableRows()
+
+    this.saveMaxLength(value)
+  }
+
+  saveMaxLength(value: number) {
+    const preferences = JSON.parse(sessionStorage.getItem("avanzapluspreferences") || "{}")
+    preferences["max-length"] = value
+
+    sessionStorage.setItem("avanzapluspreferences", JSON.stringify(preferences))
   }
 
   mutationToCallback(mutationList: MutationRecord[]): void {
@@ -376,30 +398,61 @@ export class LatestTradesDomManipulator extends DomManipulator {
       newRow.appendChild(document.createElement("td"))
     }
 
+    const isMarketMakerBuyer = this.getInstrumentInfo()?.marketMaker === history.buyer
+    const isMarketMakerSeller = this.getInstrumentInfo()?.marketMaker === history.seller
+    const isMarketMakerInvolved = isMarketMakerBuyer || isMarketMakerSeller
+
+    const buyColor = "#0474ca"
+    const sellColor = "#d0184d"
+
     // Buyer
     newRow.cells[0].innerText = history.buyer
     newRow.cells[0].style.textAlign = "center"
+
+    if (isMarketMakerInvolved) {
+      newRow.cells[0].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
 
     // Seller
     newRow.cells[1].innerText = history.seller
     newRow.cells[1].style.textAlign = "center"
 
+    if (isMarketMakerInvolved) {
+      newRow.cells[1].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
+
     // Amount
     newRow.cells[2].innerText = history.amount.toFixed(0)
     newRow.cells[2].style.textAlign = "right"
+
+    if (isMarketMakerInvolved) {
+      newRow.cells[2].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
 
     // Price
     newRow.cells[3].innerText = history.price.toFixed(2)
     newRow.cells[3].style.textAlign = "right"
     newRow.cells[3].style.paddingLeft = `8px`
 
+    if (isMarketMakerInvolved) {
+      newRow.cells[3].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
+
     // Time
     newRow.cells[6].innerText = formatTime(history.time)
     newRow.cells[6].style.paddingLeft = `8px`
     newRow.cells[6].style.textAlign = "right"
 
+    if (isMarketMakerInvolved) {
+      newRow.cells[6].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
+
     // Total
     newRow.appendChild(this.createTotalCell(history))
+
+    if (isMarketMakerInvolved) {
+      newRow.cells[7].style.color = isMarketMakerBuyer ? sellColor : buyColor
+    }
 
     newRow.setAttribute("data-fake-id", history.id)
 
