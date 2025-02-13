@@ -14,6 +14,10 @@ Avanza+ fungerar i bakgrunden och har inget GUI så ni kan 'dölja' pluginet om 
 # Demo
 ![Screen 1](screenshots/longertrades.png)
 
+![Screen 2](screenshots/coloredtrades.png)
+
+![Screen 3](screenshots/choosetradesmaxlength.png)
+
 # Todo
 - Uppdatera innehavs värde i realtid med senaste kurs / (marketmaker).
 - Rita graf med tidsserie och Y = marketmaker kurs
