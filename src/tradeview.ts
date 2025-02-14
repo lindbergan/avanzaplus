@@ -141,15 +141,23 @@ const initListOfLastTrades = (
     // Do stuff
   }
 
+  const getMarketmaker = (tickerSymbol: string): string | undefined => {
+    if (tickerSymbol.includes(" AVA ")) return "MSN"
+    if (tickerSymbol.includes(" NORDNET ")) return "NRD"
+    if (tickerSymbol.includes("BNP")) return "BNP"
+    if (tickerSymbol.includes("SHB")) return "SHB"
+    if (tickerSymbol.includes(" VT")) return "VON"
+
+    return undefined
+  }
+
   const getInstrumentInfo = (): InstrumentInfo | undefined => {
     const info = tradeManipulator.getInstrumentInfo()
 
     if (info) {
-      const isAvanzaProduct = info.tickerSymbol.includes(" AVA ")
-
       return {
         instrumentId: info.instrumentId,
-        marketMaker: isAvanzaProduct ? "MSN" : undefined
+        marketMaker: getMarketmaker(info.tickerSymbol)
       }
     }
     else {

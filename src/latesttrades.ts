@@ -421,8 +421,10 @@ export class LatestTradesDomManipulator extends DomManipulator {
       newRow.cells[1].style.color = isMarketMakerBuyer ? sellColor : buyColor
     }
 
+    const readify = (n: string) => (n || '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
     // Amount
-    newRow.cells[2].innerText = history.amount.toFixed(0)
+    newRow.cells[2].innerText = readify(history.amount.toFixed(0))
     newRow.cells[2].style.textAlign = "right"
 
     if (isMarketMakerInvolved) {
