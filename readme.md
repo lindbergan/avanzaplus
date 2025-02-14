@@ -21,5 +21,6 @@ Avanza+ fungerar i bakgrunden och har inget GUI så ni kan 'dölja' pluginet om 
 # Todo
 - Uppdatera innehavs värde i realtid med senaste kurs / (marketmaker).
 - Rita graf med tidsserie och Y = marketmaker kurs
+- Lägg till en kolumn i en senaste avslut med förändring (total) sen köp.
 
 # Kända buggar
