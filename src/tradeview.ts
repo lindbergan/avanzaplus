@@ -147,6 +147,7 @@ const initListOfLastTrades = (
     if (tickerSymbol.includes("BNP")) return "BNP"
     if (tickerSymbol.includes("SHB")) return "SHB"
     if (tickerSymbol.includes(" VT")) return "VON"
+    if (tickerSymbol.includes(" SG")) return "SGP"
 
     return undefined
   }
