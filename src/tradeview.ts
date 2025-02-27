@@ -202,7 +202,15 @@ const initMarketMakerTickGraph = (
 const getInstrumentInfo = (
   tradeManipulator: TradeManipulator,
   debug: boolean = false) => {
-  const parts = window.location.href.split("/kop/")
+  const getParts = () => {
+    if (window.location.href.includes("/kop/")) {
+      return window.location.href.split("/kop/")
+    }
+    else {
+      return window.location.href.split("/salj/")
+    }
+  }
+  const parts = getParts()
   const instrumentId = parts[parts.length - 1]
 
   fetch(`https://www.avanza.se/_api/trading-critical/rest/orderbook/${instrumentId}`)
