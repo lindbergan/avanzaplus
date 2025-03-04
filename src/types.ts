@@ -10,8 +10,10 @@ export interface TradeHistory {
 
 export interface StockTickHistory {
   buyPrice: number,
+  buyVolume: number,
   sellPrice: number,
-  time: Date,
+  sellVolume: number,
+  time: number,
 }
 
 export type Unset = undefined | null

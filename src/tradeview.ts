@@ -123,11 +123,42 @@ class TradeManipulator {
     }
   }
 
-  pushStockTickHistory(newHistory: StockTickHistory[]): void {
-    this.stockTickHistory.push(...newHistory)
+  pushStockTickHistory(newHistory: StockTickHistory): void {
+    const latestBuyPrice = this.latestBuyPrice()
+    const latestSellPrice = this.latestSellPrice()
+    const latestTime = this.latestTickTime()
 
-    // Sort todo-make better
-    this.stockTickHistory.sort((a, b) => getTime(b.time) - getTime(a.time))
+    const sameChecks = [
+      newHistory.buyPrice === latestBuyPrice,
+      newHistory.sellPrice === latestSellPrice
+    ]
+
+    if (sameChecks.every(c => c) || newHistory.time === latestTime) {
+      return
+    }
+    else {
+      this.stockTickHistory.push(newHistory)
+    }
+  }
+
+  latestTick(): StockTickHistory | undefined {
+    if (this.stockTickHistory.length > 0) {
+      return this.stockTickHistory[this.stockTickHistory.length - 1]
+    }
+
+    return undefined
+  }
+
+  latestTickTime(): number | undefined {
+    return this.latestTick()?.time
+  }
+
+  latestBuyPrice(): number | undefined {
+    return this.latestTick()?.buyPrice
+  }
+
+  latestSellPrice(): number | undefined {
+    return this.latestTick()?.sellPrice
   }
 }
 
@@ -182,9 +213,9 @@ const initMarketMakerTickGraph = (
   tradeManipulator: TradeManipulator,
   debug = false
 ) => {
-  const handleTradeUpdate = (newTrades: StockTickHistory[]) => {
+  const handleTradeUpdate = (newHistory: StockTickHistory) => {
     // Add new trades
-    tradeManipulator.pushStockTickHistory(newTrades)
+    tradeManipulator.pushStockTickHistory(newHistory)
 
     // Do stuff
   }
@@ -195,7 +226,7 @@ const initMarketMakerTickGraph = (
 
   if (debug) {
     // @ts-ignore
-    window.domManipulator = domManipulator
+    window.tradeManipulator = tradeManipulator
   }
 }
 
