@@ -233,23 +233,30 @@ const initMarketMakerTickGraph = (
 const getInstrumentInfo = (
   tradeManipulator: TradeManipulator,
   debug: boolean = false) => {
-  const getParts = () => {
+  const getId = (): string | undefined => {
     if (window.location.href.includes("/kop/")) {
-      return window.location.href.split("/kop/")
+      return window.location.href.split("/kop/")[1]
     }
-    else {
-      return window.location.href.split("/salj/")
+    else if (window.location.href.includes("/salj/")) {
+      return window.location.href.split("/salj/")[1]
     }
-  }
-  const parts = getParts()
-  const instrumentId = parts[parts.length - 1]
+    else if (window.location.href.includes("/andra/")) {
+      const parts = window.location.href.split("/andra/")?.[1]?.split("/") || []
 
-  fetch(`https://www.avanza.se/_api/trading-critical/rest/orderbook/${instrumentId}`)
-    .then(res => res.json())
-    .then(res => {
-      tradeManipulator.setInstrumentInfo((res as AvanzaInstrumentInfo))
-    })
-    .catch(err => console.log(err))
+      return parts.filter(s => s !== "")[0]
+    }
+
+    return undefined
+  }
+  const instrumentId = getId()
+  if (instrumentId !== undefined) {
+    fetch(`https://www.avanza.se/_api/trading-critical/rest/orderbook/${instrumentId}`)
+      .then(res => res.json())
+      .then(res => {
+        tradeManipulator.setInstrumentInfo((res as AvanzaInstrumentInfo))
+      })
+      .catch(err => console.log(err))
+  }
 }
 
 export const init = (debug = false) => {
