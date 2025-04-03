@@ -176,7 +176,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
       const clone: HTMLElement = (switchElement.cloneNode(true) as HTMLElement)
 
       // Add margin
-      clone.style.marginTop = "10px"
+      clone.style.marginBottom = "10px"
 
       return clone
     }
@@ -255,7 +255,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
 
       // Add to container
       if (container) {
-        container.appendChild(switchElClone)
+        container.prepend(switchElClone)
       }
     }
   }
