@@ -385,7 +385,7 @@ export class LatestTradesDomManipulator extends DomManipulator {
         firstRow.cells[1].style.paddingLeft = "8px"
 
         // Amount
-        firstRow.cells[2].style.paddingLeft = `8px`
+        firstRow.cells[2].style.paddingLeft = `22px`
 
         firstRow.appendChild(this.createTotalHeaderCell())
       }
